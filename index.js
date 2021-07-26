@@ -1,9 +1,8 @@
 const app = require('express')();
 const routes = require('./routes');
 const config = require('./config');
-const db = require('./db');
+const db = config.db
 const bodyParser = require('body-parser');
-
 /**
  * initServer: initialises the UserService Server
  *      - connects to MongoDB using connectionString defined in the config.js
@@ -17,7 +16,10 @@ const bodyParser = require('body-parser');
  */
 const initServer = async () => {
   app.use(bodyParser.json());
-  app.use('/user', routes);
+  app.use(bodyParser.urlencoded({
+    extended: true
+  }));
+  app.use('/', routes);
   try {
     await db.connectMongo();
 
@@ -25,6 +27,7 @@ const initServer = async () => {
       console.log(`Server started at port: ${config.port}`);
     });
   }catch (e) {
+    console.log(e)
     process.exit(1);
   }
 };

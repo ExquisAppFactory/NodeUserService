@@ -4,7 +4,9 @@
     "description": "A user service ",
     "main": "index.js",
     "scripts": {
-        "test": "mocha"
+        "test": "mocha",
+        "start": "node index.js",
+        "starthot": "nodemon"
     },
     "repository": {
         "type": "git",
@@ -22,9 +24,13 @@
     "homepage": "https://github.com/ExquisAppFactory/NodeUserService#readme",
     "dependencies": {
         "bcrypt": "^5.0.1",
+        "body-parser": "^1.19.0",
         "chai": "^4.3.4",
+        "cors": "^2.8.5",
         "express": "^4.17.1",
+        "joi": "^17.4.1",
         "jsonwebtoken": "^8.5.1",
-        "mocha": "^9.0.2"
+        "mocha": "^9.0.2",
+        "mongodb": "^4.0.1"
     }
 }

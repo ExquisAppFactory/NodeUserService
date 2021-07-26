@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const userDao = require('../model/user');
+const userModel = require('../model/user');
 const config = require('../config');
 
 /**
@@ -16,7 +16,7 @@ const login = async (username, password) => {
   console.log('entered login() service');
   let user, token;
   try {
-    user = await userDao.validateUser(username, password);
+    user = await userModel.validateUser(username, password);
     console.log(`User ${username} login success`);
     token = jwt.sign({username}, config.jwt_secret, {expiresIn: '2h'});
   } catch (e) {
@@ -46,7 +46,7 @@ const login = async (username, password) => {
  */
 const register = async (user) => {
     console.debug('entered register() service');
-  let userFound = await userDao.isUserExists(user.username);
+  let userFound = await userModel.isUserExists(user.username);
   if (userFound) {
     let message = `username - ${user.username}, already exists`;
     console.debug(message);
@@ -54,10 +54,10 @@ const register = async (user) => {
       errorMessage: message
     }
   } else {
-    userDao.addUser(user);
-    console.info(`User: ${user.username}, registered, also sent verification email`);
+    userModel.addUser(user);
+    console.info(`User: ${user.username}, registered`);
     return {
-      message: "A verification mail has been sent to your registered mail."
+      message: "A user has ben registered"
     }
   }
 };

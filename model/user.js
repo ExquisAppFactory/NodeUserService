@@ -9,8 +9,7 @@ const db = require('../config').db;
 const userCollection = 'user';
 
 const addUser = async (user) => {
-  let userDB = db.getUserDB();
-  let userObj = await userDB.db().collection(userCollection).insertOne(user);
+  let userObj = await db.createUser(user);
   return userObj;
 };
 

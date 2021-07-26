@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const log = require('../logger');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
@@ -7,35 +6,41 @@ const config = require('../config');
  * Validations across the application goes here, using the Joi NPM Module
  */
 
-const loginSchema = {
+const loginSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(30).required(),
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
-};
+});
 
-const registerSchema = {
+const registerSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(30).required(),
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
   firstname: Joi.string().min(2).max(30).required(),
   lastname: Joi.string().min(2).max(30).required(),
   email: Joi.string().email(),
-};
+});
 
-function validateLogin(req, res, next) {
+async function validateLogin(req, res, next) {
   let {username, password} = req.body;
 
-  Joi.validate({username, password}, loginSchema, (err, value) => {
-    err && log.error(err);
-    err ? res.status(400).json({message: 'Invalid Login Input!'}) : next();
-  });
+  try {
+    await loginSchema.validate({username, password})
+    next();
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({message: 'Invalid Login Input!'})
+  }
+
 }
 
-function validateRegistration(req, res, next) {
+async function validateRegistration(req, res, next) {
   let user = req.body;
-
-  Joi.validate(user, registerSchema, (err, value) => {
-    err && log.error(err);
-    err ? res.status(400).json({message: 'Invalid Registration Input!'}) : next();
-  });
+  try {
+    await registerSchema.validateAsync(user)
+    next()
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({message: 'Invalid Registration Input!'});
+  }
 }
 
 function validateToken(req, res, next) {
